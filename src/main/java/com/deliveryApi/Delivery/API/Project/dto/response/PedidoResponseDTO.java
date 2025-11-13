@@ -1,4 +1,4 @@
-package com.deliveryApi.Delivery.API.Project.dto;
+package com.deliveryApi.Delivery.API.Project.dto.response;
 
 import com.deliveryApi.Delivery.API.Project.entity.Pedido;
 import com.deliveryApi.Delivery.API.Project.entity.Restaurante;

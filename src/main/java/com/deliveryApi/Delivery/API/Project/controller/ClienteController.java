@@ -3,21 +3,14 @@ package com.deliveryApi.Delivery.API.Project.controller;
 import java.util.List;
 import java.util.Optional;
 
-import com.deliveryApi.Delivery.API.Project.dto.ClienteRequestDTO;
-import com.deliveryApi.Delivery.API.Project.dto.ClienteResponseDTO;
+import com.deliveryApi.Delivery.API.Project.dto.request.ClienteRequestDTO;
+import com.deliveryApi.Delivery.API.Project.dto.response.ClienteResponseDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.deliveryApi.Delivery.API.Project.entity.Cliente;
 import com.deliveryApi.Delivery.API.Project.services.ClienteService;
@@ -34,24 +27,17 @@ public class ClienteController {
      * Cadastrar novo cliente
      */
     @PostMapping
-    public ResponseEntity<?> cadastrar(@Valid @RequestBody ClienteRequestDTO cliente) {
-        try {
-            ClienteResponseDTO clienteSalvo = clienteService.cadastrar(cliente);
-            return ResponseEntity.status(HttpStatus.CREATED).body(clienteSalvo);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Erro interno do servidor");
-        }
+    public ResponseEntity<ClienteResponseDTO> cadastrar(@Valid @RequestBody ClienteRequestDTO dto) {
+        ClienteResponseDTO cliente = clienteService.cadastrar(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(cliente);
     }
 
     /**
      * Listar todos os clientes ativos
      */
     @GetMapping
-    public ResponseEntity<List<Cliente>> listar() {
-        List<Cliente> clientes = clienteService.listarAtivos();
+    public ResponseEntity<List<ClienteResponseDTO>> listar() {
+        List<ClienteResponseDTO> clientes = clienteService.listarAtivos();
         return ResponseEntity.ok(clientes);
     }
 
@@ -59,30 +45,24 @@ public class ClienteController {
      * Buscar cliente por ID
      */
     @GetMapping("/{id}")
-    public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
-        Optional<Cliente> cliente = clienteService.buscarPorId(id);
-
-        if (cliente.isPresent()) {
-            return ResponseEntity.ok(cliente.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<ClienteResponseDTO> buscarPorId(@PathVariable Long id) {
+        ClienteResponseDTO cliente = clienteService.buscarPorId(id);
+        return ResponseEntity.ok(cliente);
     }
 
     /**
      * Atualizar cliente
      */
     @PutMapping("/{id}")
-    public ResponseEntity<?> atualizar(@PathVariable Long id,
-                                       @Validated @RequestBody Cliente cliente) {
-        try {
-            Cliente clienteAtualizado = clienteService.atualizar(id, cliente);
-            return ResponseEntity.ok(clienteAtualizado);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Erro interno do servidor");
-        }
+    public ResponseEntity<ClienteResponseDTO> atualizar(@PathVariable Long id,
+                                       @Validated @RequestBody ClienteRequestDTO dto) {
+        ClienteResponseDTO cliente = clienteService.atualizar(id, dto);
+        return ResponseEntity.ok().body(cliente);
+    }
+
+    @DeleteMapping("/id")
+    public ResponseEntity<ClienteResponseDTO> ativarDesativar(@PathVariable Long id){
+        ClienteResponseDTO cliente = clienteService.ativarDesativar(id);
+        return ResponseEntity.ok(cliente);
     }
 }

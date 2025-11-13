@@ -1,6 +1,5 @@
-package com.deliveryApi.Delivery.API.Project.dto;
+package com.deliveryApi.Delivery.API.Project.dto.request;
 
-import jakarta.persistence.Column;
 import lombok.Data;
 
 import java.math.BigDecimal;

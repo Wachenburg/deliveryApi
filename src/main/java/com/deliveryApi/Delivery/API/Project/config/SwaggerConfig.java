@@ -21,9 +21,9 @@ public class SwaggerConfig {
 
         return new OpenAPI()
                 .info(new Info()
-                        .title("DeliveryTech API")
+                        .title("Delivery API")
                         .version("1.0.0")
-                        .description("API for managing delivery operations")
+                        .description("API for delivery app")
                         .contact(new Contact()
                                 .name("DeliveryTech Support")
                                 .email("dev@deliverytech.com")

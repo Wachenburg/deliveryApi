@@ -15,29 +15,20 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Table(name = "clientes")
 public class Cliente {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String nome;
-
     private String email;
-
     private String telefone;
-
     private String endereco;
-
     @Column(name = "data_cadastro")
     private LocalDateTime dataCadastro;
-
     @Column(nullable = true)
     private Boolean ativo;
-
     @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Pedido> pedidos;
-
     public void inativar() {
         this.ativo = false;
     }

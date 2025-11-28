@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 
 @Data
 public class ProdutoResponseDTO {
+
     private Long id;
     private String nome;
     private String descricao;
@@ -14,4 +15,5 @@ public class ProdutoResponseDTO {
     private Boolean disponivel;
     private BigDecimal preco;
     private boolean ativo;
+
 }

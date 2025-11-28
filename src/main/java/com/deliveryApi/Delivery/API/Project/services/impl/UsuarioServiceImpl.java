@@ -61,7 +61,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     public LoginResponseDTO login(LoginRequestDTO dto) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getSenha()));
         Usuario usuario = usuarioRepository.findByEmail(dto.getEmail())
-                .orElseThrow(() -> new BusinessException(String.valueOf(HttpStatus.UNAUTHORIZED)));
+                .orElseThrow(() -> new BusinessException("Usuário inválido", String.valueOf(HttpStatus.UNAUTHORIZED)));
 
         LoginResponseDTO responseDTO = new LoginResponseDTO();
         responseDTO.setUsuario(modelMapper.map(usuario, UsuarioResponseDTO.class));

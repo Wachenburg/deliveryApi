@@ -18,6 +18,7 @@ import java.util.Optional;
 @Service
 @Transactional
 public class ClienteServiceImpl implements ClienteService {
+
     @Autowired
     private ClienteRepository clienteRepository;
 
@@ -26,52 +27,90 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Override
     public ClienteResponseDTO cadastrar(ClienteRequestDTO dto) {
-        if(clienteRepository.existsByEmail(dto.getEmail())){
-            throw new BusinessException("Email já cadastrado" + dto.getEmail());
+        // Validar email único
+        if (clienteRepository.existsByEmail(dto.getEmail())) {
+            throw new BusinessException("Email já cadastrado: " + dto.getEmail());
         }
+        // Converter DTO para entidade
         Cliente cliente = modelMapper.map(dto, Cliente.class);
         cliente.setAtivo(true);
-        Cliente saveSalvo = clienteRepository.save(cliente);
-        return modelMapper.map(saveSalvo, ClienteResponseDTO.class);
-    }
-
-    @Override
-    public ClienteResponseDTO buscarPorId(Long id) {
-        return null;
+        // Salvar cliente
+        Cliente clienteSalvo = clienteRepository.save(cliente);
+        // Retornar DTO de resposta
+        return modelMapper.map(clienteSalvo, ClienteResponseDTO.class);
     }
 
     @Override
     public ClienteResponseDTO atualizar(Long id, ClienteRequestDTO dto) {
-        Cliente clienteExistente = clienteRepository.findById(id).orElseThrow(() -> new BusinessException("Cliente não encontrado: " + id));
-        if(clienteRepository.existsByEmail(dto.getEmail())){
-            throw new BusinessException("Email já cadastrado" + dto.getEmail());
+        // Buscar cliente existente
+        Cliente clienteExistente = clienteRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("Cliente não encontrado: " + id));
+        // Validar dados do cliente
+        if (dto.getNome() == null || dto.getNome().isEmpty()) {
+            throw new BusinessException("Nome do cliente é obrigatório");
         }
-        if(dto.getNome() == null || dto.getNome().isEmpty()){
-            throw new BusinessException("Nome não pode ser vazio");
+        if (dto.getEmail() == null || dto.getEmail().isEmpty()) {
+            throw new BusinessException("Email do cliente é obrigatório");
         }
-        if(dto.getEmail() == null || dto.getEmail().isEmpty()){
-            throw new BusinessException("Email não pode ser vazio");
-        }
+        // Atualizar dados do cliente
         clienteExistente.setNome(dto.getNome());
-        clienteExistente.setTelefone(dto.getTelefone());
         clienteExistente.setEmail(dto.getEmail());
+        clienteExistente.setTelefone(dto.getTelefone());
         clienteExistente.setEndereco(dto.getEndereco());
-        Cliente saveAtualizado = clienteRepository.save(clienteExistente);
-        return modelMapper.map(saveAtualizado, ClienteResponseDTO.class);
+        // Salvar cliente atualizado
+        Cliente clienteAtualizado = clienteRepository.save(clienteExistente);
+        // Retornar DTO de resposta
+        return modelMapper.map(clienteAtualizado, ClienteResponseDTO.class);
     }
 
     @Override
-    public ClienteResponseDTO ativarDesativar(Long id) {
-        return null;
+    public ClienteResponseDTO ativarDesativarCliente(Long id) {
+        // Buscar cliente existente
+        Cliente clienteExistente = clienteRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("Cliente não encontrado: " + id));
+        // Inverter status de ativo
+        clienteExistente.setAtivo(!clienteExistente.getAtivo());
+        // Salvar cliente atualizado
+        Cliente clienteAtualizado = clienteRepository.save(clienteExistente);
+        // Retornar DTO de resposta
+        return modelMapper.map(clienteAtualizado, ClienteResponseDTO.class);
+    }
+
+    @Override
+    public ClienteResponseDTO buscarPorId(Long id) {
+        // Buscar cliente por ID
+        Cliente cliente = clienteRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("Cliente não encontrado: " + id));
+        // Converter entidade para DTO
+        return modelMapper.map(cliente, ClienteResponseDTO.class);
+    }
+
+    @Override
+    public ClienteResponseDTO buscarPorEmail(String email) {
+        // Buscar cliente por email
+        Cliente cliente = clienteRepository.findByEmail(email)
+                .orElseThrow(() -> new BusinessException("Cliente não encontrado com email: " + email));
+        // Converter entidade para DTO
+        return modelMapper.map(cliente, ClienteResponseDTO.class);
     }
 
     @Override
     public List<ClienteResponseDTO> listarAtivos() {
-        return List.of();
+        // Buscar clientes ativos
+        List<Cliente> clientesAtivos = clienteRepository.findByAtivoTrue();
+        // Converter lista de entidades para lista de DTOs
+        return clientesAtivos.stream()
+                .map(cliente -> modelMapper.map(cliente, ClienteResponseDTO.class))
+                .toList();
     }
-
+    //buscar por nome
     @Override
-    public List<ClienteResponseDTO> buscarPorNomes(String nome) {
-        return List.of();
+    public List<ClienteResponseDTO> buscarPorNome(String nome) {
+        // Buscar clientes por nome
+        List<Cliente> clientes = clienteRepository.findByNomeContainingIgnoreCase(nome);
+        // Converter lista de entidades para lista de DTOs
+        return clientes.stream()
+                .map(cliente -> modelMapper.map(cliente, ClienteResponseDTO.class))
+                .toList();
     }
 }

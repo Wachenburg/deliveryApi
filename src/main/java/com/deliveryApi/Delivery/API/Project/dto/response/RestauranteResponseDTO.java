@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 
 @Data
 public class RestauranteResponseDTO {
+
     private Long id;
     private String nome;
     private String categoria;
@@ -15,4 +16,5 @@ public class RestauranteResponseDTO {
     private BigDecimal taxaEntrega;
     private BigDecimal avaliacao;
     private Boolean ativo;
+
 }

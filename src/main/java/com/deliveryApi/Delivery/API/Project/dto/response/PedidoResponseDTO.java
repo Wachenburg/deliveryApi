@@ -23,4 +23,5 @@ public class PedidoResponseDTO {
     private String enderecoEntrega;
     private BigDecimal taxaEntrega;
     List<ItemPedidoRequestDTO> itens;
+
 }

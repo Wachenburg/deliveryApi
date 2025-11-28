@@ -5,8 +5,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 
 @Schema(
-    description = "Wrapper para encapsular respostas da API",
-    title = "Api Response Wrapper")
+        description = "Wrapper para encapsular respostas da API",
+        title = "Api Response Wrapper")
 public class ApiResponseWrapper<T> {
 
     @Schema(description = "Indica se a operação foi bem-sucedida", example = "true")

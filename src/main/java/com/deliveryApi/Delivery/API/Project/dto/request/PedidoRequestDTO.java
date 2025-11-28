@@ -1,6 +1,7 @@
 package com.deliveryApi.Delivery.API.Project.dto.request;
 
 
+import com.deliveryApi.Delivery.API.Project.validation.ValidCEP;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -43,9 +44,9 @@ public class PedidoRequestDTO {
     @Schema(description = "Endereço de entrega do pedido", example = "Rua das Flores, 123")
     private String enderecoEntrega;
 
-    //@NotBlank(message = "CEP é obrigatório")
-    //@ValidCEP
-    //private String cep;
+    @NotBlank(message = "CEP é obrigatório")
+    @ValidCEP
+    private String cep;
 
     @Schema(description = "Lista de itens do pedido", required = true)
     @NotEmpty(message = "Os itens são obrigatórios")

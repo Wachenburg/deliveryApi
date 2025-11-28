@@ -2,6 +2,7 @@ package com.deliveryApi.Delivery.API.Project.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -32,13 +33,24 @@ public class Pedido {
 
     private String observacoes;
 
-    @Column(name = "cliente_id")
-    private Long clienteId;
+    @Column(name = "endereco_entrega")
+    private String enderecoEntrega;
+
+    @Column(name = "taxa_entrega")
+    private BigDecimal taxaEntrega;
+
+    private String cep;
+
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
+    private List<ItemPedido> itens;
+
+    @ManyToOne
+    @JoinColumn(name = "cliente_id")
+    private Cliente cliente;
 
     @ManyToOne
     @JoinColumn(name = "restaurante_id")
     private Restaurante restaurante;
 
-    private String itens;
-
 }
+

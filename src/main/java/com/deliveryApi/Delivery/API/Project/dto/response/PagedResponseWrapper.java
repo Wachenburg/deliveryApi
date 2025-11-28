@@ -6,8 +6,8 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 @Schema(
-    description = "Wrapper para encapsular respostas de paginação da API",
-    title = "Page Response Wrapper")
+        description = "Wrapper para encapsular respostas de paginação da API",
+        title = "Page Response Wrapper")
 public class PagedResponseWrapper<T> {
 
     @Schema(description = "Lista das páginas")

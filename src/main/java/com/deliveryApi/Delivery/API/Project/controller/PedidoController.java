@@ -1,13 +1,19 @@
 package com.deliveryApi.Delivery.API.Project.controller;
+import java.math.BigDecimal;
 import java.util.List;
 
-import com.deliveryApi.Delivery.API.Project.entity.PedidoDTO;
+import com.deliveryApi.Delivery.API.Project.dto.request.ItemPedidoRequestDTO;
+import com.deliveryApi.Delivery.API.Project.dto.request.PedidoRequestDTO;
+import com.deliveryApi.Delivery.API.Project.dto.response.PedidoResponseDTO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.deliveryApi.Delivery.API.Project.entity.Pedido;
 import com.deliveryApi.Delivery.API.Project.enums.StatusPedido;
 import com.deliveryApi.Delivery.API.Project.services.PedidoService;
 
@@ -18,42 +24,77 @@ public class PedidoController {
     @Autowired
     private PedidoService pedidoService;
 
-    /**
-     * Criar novo pedido
-     */
     @PostMapping
-    public ResponseEntity<?> criarPedido(@RequestBody PedidoDTO dto) {
-        try {
-            Pedido pedido = pedidoService.criarPedido(dto);
-            return ResponseEntity.ok(pedido);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno do servidor");
-        }
+    @Operation(summary = "Criar pedido",
+            description = "Cria um novo pedido no sistema")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Pedido criado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+            @ApiResponse(responseCode = "409", description = "Pedido já existe")
+    })
+    public ResponseEntity<PedidoResponseDTO> criarPedido(@Valid @RequestBody PedidoRequestDTO dto) {
+        PedidoResponseDTO pedido = pedidoService.criarPedido(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(pedido);
     }
-    /**
-     * Listar pedidos por cliente
-     */
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Buscar pedido por ID",
+            description = "Recupera os detalhes de um pedido específico pelo ID")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Pedido encontrado"),
+            @ApiResponse(responseCode = "404", description = "Pedido não encontrado")
+    })
+    public ResponseEntity<PedidoResponseDTO> buscarPorId(@PathVariable Long id) {
+        PedidoResponseDTO pedido = pedidoService.buscarPorId(id);
+        return ResponseEntity.ok(pedido);
+    }
+
     @GetMapping("/cliente/{clienteId}")
-    public ResponseEntity<List<Pedido>> listarPorCliente(@PathVariable Long clienteId) {
-        List<Pedido> pedidos = pedidoService.listarPorCliente(clienteId);
+    @Operation(summary = "Listar pedidos por cliente",
+            description = "Lista todos os pedidos de um cliente específico")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Pedidos encontrados"),
+            @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
+    })
+    public ResponseEntity<List<PedidoResponseDTO>> listarPedidosPorCliente(@PathVariable Long clienteId) {
+        List<PedidoResponseDTO> pedidos = pedidoService.listarPedidosPorCliente(clienteId);
         return ResponseEntity.ok(pedidos);
     }
-
-    /**
-     * Atualizar status do pedido
-     */
-    @PutMapping("/{pedidoId}/{status}")
-    public ResponseEntity<?> atualizarStatus(@PathVariable Long pedidoId,
-                                             @PathVariable StatusPedido status) {
-        try {
-            Pedido pedido = pedidoService.atualizarStatus(pedidoId, status);
-            return ResponseEntity.ok(pedido);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Erro interno do servidor");
-        }
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Cancelar pedido",
+            description = "Cancela um pedido específico pelo ID")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Pedido cancelado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Pedido não encontrado")
+    })
+    public ResponseEntity<PedidoResponseDTO> cancelarPedido(@PathVariable Long id) {
+        PedidoResponseDTO pedido = pedidoService.cancelarPedido(id);
+        return ResponseEntity.ok(pedido);
+    }
+    @PostMapping("/calcular")
+    @Operation(summary = "Calcular valor total do pedido",
+            description = "Calcula o valor total de um pedido com base nos itens fornecidos")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Valor total calculado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos")
+    })
+    public ResponseEntity<BigDecimal> calcularValorTotalPedido(@RequestBody List<ItemPedidoRequestDTO> itens) {
+        BigDecimal valorTotal = pedidoService.calcularValorTotalPedido(itens);
+        return ResponseEntity.ok(valorTotal);
     }
 
+    @PutMapping("/{id}/{status}")
+    @Operation(summary = "Atualizar status do pedido",
+            description = "Atualiza o status de um pedido específico pelo ID")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Status do pedido atualizado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Pedido não encontrado"),
+            @ApiResponse(responseCode = "400", description = "Status inválido")
+    })
+    public ResponseEntity<PedidoResponseDTO> atualizarStatus(
+            @PathVariable Long id,
+            @PathVariable StatusPedido status) {
+        PedidoResponseDTO dto = pedidoService.atualizarStatusPedido(id, status);
+        return ResponseEntity.ok(dto);
+    }
 }

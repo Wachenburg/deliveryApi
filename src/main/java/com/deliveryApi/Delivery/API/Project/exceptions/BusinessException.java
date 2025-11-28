@@ -3,8 +3,32 @@ package com.deliveryApi.Delivery.API.Project.exceptions;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-public class BusinessException extends RuntimeException{
+public class BusinessException extends RuntimeException {
+    private String errorCode;
 
-    public BusinessException(@NotBlank(message = "O email é obrigatório") @Email(message = "O email precisa ser válido") String s) {
+    public BusinessException(String message) {
+        super(message);
+    }
+
+    public BusinessException(String message, String errorCode) {
+        super(message);
+        this.errorCode = errorCode;
+    }
+
+    public BusinessException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public BusinessException(String message, String errorCode, Throwable cause) {
+        super(message, cause);
+        this.errorCode = errorCode;
+    }
+
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
     }
 }

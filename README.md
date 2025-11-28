@@ -2,7 +2,7 @@
 Sistema de delivery desenvolvido com Spring Boot e Java 21.
 
 ## 🚀 Tecnologias
-- **Java 21 LTS** (versão mais recente)
+- **Java SE 22**
 - Spring Boot 3.2.x
 - Spring Web
 - Spring Data JPA
@@ -13,10 +13,10 @@ Sistema de delivery desenvolvido com Spring Boot e Java 21.
 - Records (Java 14+)
 - Text Blocks (Java 15+)
 - Pattern Matching (Java 17+)
-- Virtual Threads (Java 21)
+- Virtual Threads (Java 21+)
 
 ## 🏃‍♂️ Como executar
-1. **Pré-requisitos:** JDK 21 instalado
+1. **Pré-requisitos:** JDK 22 instalado
 2. Clone o repositório
 3. Execute: `./mvnw spring-boot:run`
 4. Acesse: http://localhost:8080/health
@@ -32,5 +32,5 @@ Sistema de delivery desenvolvido com Spring Boot e Java 21.
 - Profile: development
 
 ## 👨‍💻 Desenvolvedor
-[Seu Nome] - [Sua Turma]  
-Desenvolvido com JDK 21 e Spring Boot 3.2.x
+Lukas Krick - Análise e Desenvolvimento de Sistemas [EXTESPDG-AJWW1-57955876] 
+Desenvolvido com JDK 22 e Spring Boot 3.2.x
